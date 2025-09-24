@@ -139,7 +139,7 @@ while [[ $choice != 6 ]]; do
     5)
 
       echo "Available branches:\n"
-      git branch -a
+      git --no-pager branch -a
       echo ""
       read -p "Enter branch name to switch to: " branch_name
       git checkout "$branch_name"

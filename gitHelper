@@ -1,85 +1,173 @@
 # !/bin/bash
-
+  
 # A simple Git helper script to automate common tasks
-echo "What would you like to do?"
-echo "1) Make a commit"
-echo "2) Push changes to remote"
-echo "3) Pull changes from remote"
-echo "4) Make a new branch"
-echo "5) Switch to a branch"
-echo "6) Exit"
-read -p "Enter your choice [1:6]: " choice
 
-case $choice in
-  1)
-    echo "What files would you like to commit?"
-    echo "1) All files"
-    echo "2) Specific files"
-    read -p "Enter your choice [1:2]: " file_choice
-    if [ "$file_choice" -eq 1 ]; then
-      git add -A
-    elif [ "$file_choice" -eq 2 ]; then
+while [[ $choice != 6 ]]; do
 
-      choice="y"
+  echo "What would you like to do?\n"
+  echo "1) Make a commit"
+  echo "2) Push changes to remote"
+  echo "3) Pull changes from remote"
+  echo "4) Make a new branch"
+  echo "5) Switch to a branch"
+  echo "6) Exit\n"
+  read -p "Enter your choice [1:6]: " choice
+  echo "\n~~~~~~~~~~~~~~~~~~~~~~~~~\n"
 
-      while true; do
 
-        echo "Here are the recently changed files:\n"
-        git status -s
-        echo ""
-        read -p "Enter a file you would like to stage: " file
 
-        git add "$file"
 
-        read -p "Would you like to stage another file? (y/n): " choice
 
-        while [[ "$choice" != "n" && "$choice" != "N" && "$choice" != "y" && "$choice" != "Y" ]]; do
-          echo "Invalid choice. Please enter 'y' or 'n'."
+  case $choice in
+
+  # MAKING A COMMIT
+    1)
+
+      echo "What files would you like to commit?\n"
+      echo "1) All files"
+      echo "2) Specific files\n"
+      read -p "Enter your choice [1:2]: " choice
+      echo "\n~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+
+
+
+      if [ "$choice" -eq 1 ]; then
+
+        git add -A
+
+
+
+      elif [ "$choice" -eq 2 ]; then
+
+        choice="y"
+
+        while true; do
+
+          echo "Here are the recently changed files:\n"
+          git status -s
+          echo ""
+          read -p "Enter a file you would like to stage: " file
+          echo "\n~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+
+          git add "$file"
+
           read -p "Would you like to stage another file? (y/n): " choice
+          echo "\n~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+
+          while [[ "$choice" != "n" && "$choice" != "N" && "$choice" != "y" && "$choice" != "Y" ]]; do
+            echo "Invalid choice. Please enter 'y' or 'n'.\n"
+            read -p "Would you like to stage another file? (y/n): " choice
+            echo "\n~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+          done
+
+          if [[ "$choice" == "n" || "$choice" == "N" ]]; then
+            break
+          fi
+
         done
 
-        if [[ "$choice" == "n" || "$choice" == "N" ]]; then
-          break
-        fi
-
-      done
 
 
+      else
 
-    else
-      echo "Invalid choice."
-      exit 1
-    fi
-    read -p "Enter commit message: " commit_message
-    git commit -m "$commit_message"
-    echo "Changes committed with message: '$commit_message'"
-    ;;
-  2)
-    git push
-    echo "Changes pushed to remote."
-    ;;
-  3)
-    git pull --rebase
-    echo "Pulled latest changes from remote."
-    ;;
-  4)
-    read -p "Enter new branch name: " branch_name
-    git checkout -b "$branch_name"
-    git push -u origin "$branch_name"
-    echo "Switched to new branch '$branch_name' and pushed to remote."
-    ;;
-  5)
-    echo "Available branches:"
-    git branch -a
-    read -p "Enter branch name to switch to: " branch_name
-    git checkout "$branch_name"
-    echo "Switched to branch '$branch_name'."
-    ;;
-  6)
-    echo "Exiting."
-    exit 0
-    ;;
-  *)
-    echo "Invalid choice. Please select 1, 2, or 3."
-    ;;
-esac
+        echo "Invalid choice."
+        exit 1
+
+      fi
+
+
+
+      read -p "Enter commit message: " commit_message
+      echo ""
+      git commit -m "$commit_message"
+      echo "\n~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+
+      ;;
+
+
+
+
+
+  # PUSHING CHANGES TO REMOTE
+    2)
+
+      read -p "Are you sure you want to push changes to remote? (y/n): " confirm_push
+      echo ""
+      if [[ "$confirm_push" != "y" && "$confirm_push" != "Y" ]]; then
+        echo "Push cancelled."
+      else
+        git push
+      fi
+
+      echo "\n~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+
+      ;;
+
+
+
+
+
+  # PULLING CHANGES FROM REMOTE 
+    3)
+
+      git pull --rebase
+
+      echo "\n~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+
+      ;;
+
+
+
+
+
+  # MAKING A NEW BRANCH
+    4)
+
+      read -p "Enter new branch name: " branch_name
+      git checkout -b "$branch_name"
+      git push -u origin "$branch_name"
+      echo "Switched to new branch '$branch_name' and pushed to remote."
+      echo "\n~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+
+      ;;
+
+
+
+
+
+  # SWITCHING TO A BRANCH
+    5)
+
+      echo "Available branches:\n"
+      git branch -a
+      echo ""
+      read -p "Enter branch name to switch to: " branch_name
+      git checkout "$branch_name"
+      echo "\n~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+
+      ;;
+
+
+
+
+
+  # EXITING THE SCRIPT
+    6)
+    
+      echo "Exiting...\n"
+      
+      ;;
+
+
+
+
+
+  # INVALID CHOICE HANDLING
+    *)
+      echo "Invalid choice. Please enter a value from 1 to 6."
+      echo "\n~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+      ;;
+      
+  esac
+
+done

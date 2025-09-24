@@ -1,0 +1,74 @@
+# !/bin/bash
+
+# A simple Git helper script to automate common tasks
+echo "What would you like to do?"
+echo "1) Make a commit"
+echo "2) Push changes to remote"
+echo "3) Pull changes from remote"
+echo "4) Make a new branch"
+echo "5) Switch to a branch"
+echo "6) Exit"
+read -p "Enter your choice [1:6]: " choice
+
+case $choice in
+  1)
+    echo "What files would you like to commit?"
+    echo "1) All files"
+    echo "2) Specific files"
+    read -p "Enter your choice [1:2]: " file_choice
+    if [ "$file_choice" -eq 1 ]; then
+      git add -A
+    elif [ "$file_choice" -eq 2 ]; then
+
+      ls -R .
+      read -r -p "Enter paths and file names (use quotes for paths with spaces): " -a files_array
+
+      if [ ${#files_array[@]} -eq 0 ]; then
+        echo "No files entered. Exiting."
+        exit 1
+      fi
+
+      git add "${files_array[@]}"
+
+      echo "✅ Successfully staged the following files:"
+      for file in "${files_array[@]}"; do
+        echo "  - $file"
+      done
+
+    else
+      echo "Invalid choice."
+      exit 1
+    fi
+    read -p "Enter commit message: " commit_message
+    git commit -m "$commit_message"
+    echo "Changes committed with message: '$commit_message'"
+    ;;
+  2)
+    git push
+    echo "Changes pushed to remote."
+    ;;
+  3)
+    git pull --rebase
+    echo "Pulled latest changes from remote."
+    ;;
+  4)
+    read -p "Enter new branch name: " branch_name
+    git checkout -b "$branch_name"
+    git push -u origin "$branch_name"
+    echo "Switched to new branch '$branch_name' and pushed to remote."
+    ;;
+  5)
+    echo "Available branches:"
+    git branch -a
+    read -p "Enter branch name to switch to: " branch_name
+    git checkout "$branch_name"
+    echo "Switched to branch '$branch_name'."
+    ;;
+  6)
+    echo "Exiting."
+    exit 0
+    ;;
+  *)
+    echo "Invalid choice. Please select 1, 2, or 3."
+    ;;
+esac

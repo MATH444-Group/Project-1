@@ -3,9 +3,12 @@ import os
 
 def setup():
   try:
+    log_dir = '../logs'
     log_file = '../logs/app.log'
 
     if not os.path.isfile(log_file):
+      if not os.path.isdir(log_dir):
+        os.mkdir(log_dir)
       with open(log_file, 'w') as f:
         pass
 

@@ -6,9 +6,9 @@ import sys
 if not os.path.isdir('utils'):
   os.system('git clone https://github.com/GevChalikyan/utils.git')
 else:
-  os.system('''cd utils
-    git pull
-    cd ..''')
+  os.chdir('utils')
+  os.system('git pull')
+  os.chdir('..')
 
 sys.path.append('utils')
 import data_loader as dl

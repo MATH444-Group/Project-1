@@ -2,3 +2,6 @@
 .DS_Store
 .history/
 .vscode/
+
+# Python
+__pycache__/

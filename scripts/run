@@ -3,4 +3,7 @@
 clear
 
 cd ../src
-python3 main.py
+case "$OSTYPE" in
+  darwin*)  python3 main.py ;;
+  msys*)    python main.py ;;
+esac

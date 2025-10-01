@@ -1,16 +1,8 @@
 import logging
 import pandas as pd
+import sys
 
-try:
-  logging.basicConfig(
-    filename='../logs/app.log', 
-    level=logging.INFO, 
-    filemode='w',
-    format='%(asctime)s | %(levelname)s:\n\t%(message)s'
-  )
-except Exception as e:
-  print(f'Logging setup failed: {e}')
-  exit(1)
+sys.path.append('utils')
 
 
 
@@ -42,4 +34,8 @@ def main():
 
 
 if __name__ == '__main__':
+
+  import logger
+  logger.setup()
+
   main()

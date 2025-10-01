@@ -32,7 +32,7 @@ def main():
   
   df = dl.load_df(file_path)
 
-  print(df.head)
+  print(df.head())
 
 
 

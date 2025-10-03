@@ -26,3 +26,5 @@ else:
 
 
 sys.path.append('utils')
+
+import logger

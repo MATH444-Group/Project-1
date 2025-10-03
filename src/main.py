@@ -28,7 +28,4 @@ def main():
 
 if __name__ == '__main__':
 
-  import logger
-  logger.setup()
-
   main()

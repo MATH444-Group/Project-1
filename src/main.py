@@ -16,6 +16,18 @@ import data_loader as dl
 
 
 
+RAW_DATA_DIR: os.path = '../data/raw/'
+RAW_DATA_FILE: os.path = 'train.csv'
+RAW_DATA_PATH: os.path = os.path.join(RAW_DATA_DIR, RAW_DATA_FILE)
+
+CLEAN_DATA_DIR: os.path = '../data/cleaned/'
+CLEAN_DATA_FILE: os.path = 'cleaned train.csv'
+CLEAN_DATA_PATH: os.path = os.path.join(CLEAN_DATA_DIR, CLEAN_DATA_FILE)
+
+
+
+
+
 def hasNull(df):
 
   numNullValues = df.isna().sum().sum()
@@ -59,19 +71,25 @@ def cleanData(df):
 
 
 
+def exportData(df, data_path):
+  df.to_csv(data_path, index=False)
+
+
+
+
+
+
 
 def main():
   
-  FILE_PATH = '../data/train.csv'
-
-
-  
-  df = dl.load_df(FILE_PATH)
+  df = dl.load_df(RAW_DATA_PATH)
 
   df = cleanData(df)
 
   print(df.head())
   print(df.shape[0])
+
+  exportData(df, CLEAN_DATA_PATH)
 
 
 

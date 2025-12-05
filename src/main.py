@@ -18,9 +18,9 @@ import data_loader as dl
 
 def main():
 
-  file_path = '../data/train.csv'
+  __FILE_PATH__ = '../data/train.csv'
   
-  df = dl.load_df(file_path)
+  df = dl.load_df(__FILE_PATH__)
 
   print(df.head())
 

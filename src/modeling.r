@@ -49,3 +49,50 @@ if (!file.exists(MODEL_FILE_BACKWARD_AIC)) {
 
 summary(aic_forward_model)
 summary(aic_backward_model)
+
+# Setting up for BIC selection
+n_obs <- nrow(data)
+k_bic <- log(n_obs)
+
+MODEL_FILE_FORWARD_BIC  <- paste0(MODEL_FILE_DIR, "bic_forward_selection_model.rds")
+MODEL_FILE_BACKWARD_BIC <- paste0(MODEL_FILE_DIR, "bic_backward_selection_model.rds")
+
+# Forward BIC selection
+if (!file.exists(MODEL_FILE_FORWARD_BIC)) {
+  bic_forward_model <- stepAIC(
+    NULL_MODEL,
+    scope     = list(lower = NULL_MODEL, upper = fULL_MODEL),
+    direction = "forward",
+    k         = k_bic,
+    trace     = FALSE
+  )
+  saveRDS(bic_forward_model, MODEL_FILE_FORWARD_BIC)
+} else {
+  bic_forward_model <- readRDS(MODEL_FILE_FORWARD_BIC)
+}
+
+# Backward BIC selection
+if (!file.exists(MODEL_FILE_BACKWARD_BIC)) {
+  bic_backward_model <- stepAIC(
+    fULL_MODEL,
+    direction = "backward",
+    k         = k_bic,
+    trace     = FALSE
+  )
+  saveRDS(bic_backward_model, MODEL_FILE_BACKWARD_BIC)
+} else {
+  bic_backward_model <- readRDS(MODEL_FILE_BACKWARD_BIC)
+}
+
+summary(bic_forward_model)
+summary(bic_backward_model)
+
+count_vars <- function(model) {
+  length(coef(model)) - 1   # subtract intercept
+}
+
+print("\nVariable Counts:\n")
+print("AIC Forward   :", count_vars(aic_forward_model),   "variables\n")
+print("AIC Backward  :", count_vars(aic_backward_model),  "variables\n")
+print("BIC Forward   :", count_vars(bic_forward_model),   "variables\n")
+print("BIC Backward  :", count_vars(bic_backward_model),  "variables\n")

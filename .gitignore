@@ -1,3 +1,11 @@
 # VS Code
+.DS_Store
 .history/
 .vscode/
+
+# Python
+__pycache__/
+
+# Other
+logs/
+utils/

@@ -1,0 +1,9 @@
+# !/bin/bash
+
+clear
+
+cd ../src
+case "$OSTYPE" in
+  darwin*)  python3 main.py ;;
+  msys*)    python main.py ;;
+esac

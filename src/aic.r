@@ -10,8 +10,8 @@ runAIC <- function(summarize = FALSE) {
     dir.create(MODEL_DIR)
   }
 
-  AIC_FORWARD_MODEL_PATH <- paste0(MODEL_DIR, "aic_forward_selection_model.rds")
-  AIC_BACKWARD_MODEL_FILE <- paste0(MODEL_DIR, "aic_backward_selection_model.rds")
+  AIC_FORWARD_MODEL_PATH <- paste0(MODEL_DIR, "aic_forward_model.rds")
+  AIC_BACKWARD_MODEL_FILE <- paste0(MODEL_DIR, "aic_backward_model.rds")
 
   NULL_MODEL <- lm(SalePrice ~ 1, data = data)
   fULL_MODEL <- lm(SalePrice ~ ., data = data)
@@ -20,11 +20,12 @@ runAIC <- function(summarize = FALSE) {
 
 
 
+  # Forward AIC selection
   if (!file.exists(AIC_FORWARD_MODEL_PATH)) {
     aic_forward_model <- stepAIC(NULL_MODEL,
-      scope = list(lower = NULL_MODEL, upper = fULL_MODEL),
+      scope     = list(lower = NULL_MODEL, upper = fULL_MODEL),
       direction = "forward",
-      trace = FALSE
+      trace     = FALSE
     )
     saveRDS(aic_forward_model, AIC_FORWARD_MODEL_PATH)
   } else {
@@ -33,10 +34,11 @@ runAIC <- function(summarize = FALSE) {
 
 
 
+  # Backward AIC selection
   if (!file.exists(AIC_BACKWARD_MODEL_FILE)) {
     aic_backward_model <- stepAIC(fULL_MODEL,
       direction = "backward",
-      trace = FALSE
+      trace     = FALSE
     )
     saveRDS(aic_backward_model, AIC_BACKWARD_MODEL_FILE)
   } else {

@@ -17,6 +17,9 @@ runBIC <- function(summarize = FALSE, printCounts = FALSE) {
   BIC_FORWARD_MODEL_PATH  <- paste0(MODEL_DIR, "bic_forward_model.rds")
   BIC_BACKWARD_MODEL_PATH <- paste0(MODEL_DIR, "bic_backward_model.rds")
 
+  NULL_MODEL <- lm(SalePrice ~ 1, data = data)
+  fULL_MODEL <- lm(SalePrice ~ ., data = data)
+
 
 
 

@@ -12,14 +12,14 @@ if (!file.exists(DATA_PATH)) {
 data <- read.csv(DATA_PATH)
 
 source("reduction.r")
-data <- dropUncorrelatedPredictors(data = data, responseVariable = "SalePrice")
+reducedData <- dropUncorrelatedPredictors(data = data, responseVariable = "SalePrice")
 
 
 
 
 
 source("aic.r")
-runAIC(counts = TRUE)
+runAIC(data = reducedData, counts = TRUE)
 
 source("bic.r")
-runBIC(counts = TRUE)
+runBIC(data = reducedData, counts = TRUE)

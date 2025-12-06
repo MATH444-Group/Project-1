@@ -13,6 +13,7 @@ data <- read.csv(DATA_PATH)
 
 source("reduction.r")
 reducedData <- dropUncorrelatedPredictors(data = data, responseVariable = "SalePrice")
+reducedData <- dropHighCollinearPredictors(data = reducedData, responseVariable = "SalePrice")
 
 
 

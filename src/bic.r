@@ -1,4 +1,4 @@
-runBIC <- function(summarize = FALSE, counts = FALSE) {
+runBIC <- function(data, summarize = FALSE, counts = FALSE) {
 
   library(MASS)
 
@@ -65,9 +65,9 @@ runBIC <- function(summarize = FALSE, counts = FALSE) {
   }
 
   if (counts) {
-    message("\nVariable Counts:\n")
-    message("BIC Forward   :", count_vars(bic_forward_model),   "variables\n")
-    message("BIC Backward  :", count_vars(bic_backward_model),  "variables\n")
+    message("Variable Counts:")
+    message("BIC Forward: ", count_vars(bic_forward_model),   " variables")
+    message("BIC Backward: ", count_vars(bic_backward_model),  " variables\n")
   }
 
 }

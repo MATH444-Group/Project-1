@@ -80,7 +80,7 @@ dropUncorrelatedPredictors <- function(data, responseVariable = "Y", threshold =
 
 
   clean_data <- data[, variablesToKeep, drop = FALSE]
-  message(paste("Variables removed:", ncol(data) - ncol(clean_data)))
+  message(paste("Variables removed:", ncol(data) - ncol(clean_data)), "\n")
   
   return(clean_data)
 

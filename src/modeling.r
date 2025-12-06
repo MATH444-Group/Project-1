@@ -11,6 +11,9 @@ if (!file.exists(DATA_PATH)) {
 
 data <- read.csv(DATA_PATH)
 
+source("reduction.r")
+data <- dropUncorrelatedPredictors(data = data, responseVariable = "SalePrice")
+
 
 
 

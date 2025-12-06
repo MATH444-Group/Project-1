@@ -54,7 +54,7 @@ runAIC <- function(summarize = FALSE, counts = FALSE) {
     print(summary(aic_backward_model))
   }
 
-  if (printCounts) {
+  if (counts) {
     print("\nVariable Counts:\n")
     print("AIC Forward   :", count_vars(aic_forward_model),   "variables\n")
     print("AIC Backward  :", count_vars(aic_backward_model),  "variables\n")

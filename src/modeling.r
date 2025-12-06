@@ -19,7 +19,7 @@ data <- dropUncorrelatedPredictors(data = data, responseVariable = "SalePrice")
 
 
 source("aic.r")
-runAIC(summarize = TRUE)
+runAIC(counts = TRUE)
 
 source("bic.r")
-runBIC(printCounts = TRUE)
+runBIC(counts = TRUE)

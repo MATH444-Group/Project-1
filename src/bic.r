@@ -65,9 +65,9 @@ runBIC <- function(summarize = FALSE, counts = FALSE) {
   }
 
   if (counts) {
-    print("\nVariable Counts:\n")
-    print("BIC Forward   :", count_vars(bic_forward_model),   "variables\n")
-    print("BIC Backward  :", count_vars(bic_backward_model),  "variables\n")
+    message("\nVariable Counts:\n")
+    message("BIC Forward   :", count_vars(bic_forward_model),   "variables\n")
+    message("BIC Backward  :", count_vars(bic_backward_model),  "variables\n")
   }
 
 }

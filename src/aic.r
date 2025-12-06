@@ -1,4 +1,4 @@
-runAIC <- function(summarize = FALSE) {
+runAIC <- function(summarize = FALSE, counts = FALSE) {
 
   library(MASS)
 
@@ -52,6 +52,12 @@ runAIC <- function(summarize = FALSE) {
   if (summarize) {
     print(summary(aic_forward_model))
     print(summary(aic_backward_model))
+  }
+
+  if (printCounts) {
+    print("\nVariable Counts:\n")
+    print("AIC Forward   :", count_vars(aic_forward_model),   "variables\n")
+    print("AIC Backward  :", count_vars(aic_backward_model),  "variables\n")
   }
 
 }

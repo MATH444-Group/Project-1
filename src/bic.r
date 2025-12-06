@@ -1,4 +1,4 @@
-runBIC <- function(summarize = FALSE, printCounts = FALSE) {
+runBIC <- function(summarize = FALSE, counts = FALSE) {
 
   library(MASS)
 
@@ -64,10 +64,8 @@ runBIC <- function(summarize = FALSE, printCounts = FALSE) {
     length(coef(model)) - 1   # subtract intercept
   }
 
-  if (printCounts) {
+  if (counts) {
     print("\nVariable Counts:\n")
-    print("AIC Forward   :", count_vars(aic_forward_model),   "variables\n")
-    print("AIC Backward  :", count_vars(aic_backward_model),  "variables\n")
     print("BIC Forward   :", count_vars(bic_forward_model),   "variables\n")
     print("BIC Backward  :", count_vars(bic_backward_model),  "variables\n")
   }

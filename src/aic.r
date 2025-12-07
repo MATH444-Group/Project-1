@@ -1,4 +1,4 @@
-runAIC <- function(data, summarize = FALSE, counts = FALSE) {
+runAIC <- function(data, summarize = FALSE, counts = FALSE, r2 = FALSE, plot = TRUE) {
 
   library(MASS)
 
@@ -49,9 +49,12 @@ runAIC <- function(data, summarize = FALSE, counts = FALSE) {
 
 
 
+  aic_forward_summary <- summary(aic_forward_model)
+  aic_backward_summary <- summary(aic_backward_model)
+
   if (summarize) {
-    print(summary(aic_forward_model))
-    print(summary(aic_backward_model))
+    print(aic_forward_summary)
+    print(aic_backward_summary)
   }
 
   count_vars <- function(model) {
@@ -60,8 +63,23 @@ runAIC <- function(data, summarize = FALSE, counts = FALSE) {
 
   if (counts) {
     message("Variable Counts:")
-    message("AIC Forward: ", count_vars(aic_forward_model),   " variables")
-    message("AIC Backward: ", count_vars(aic_backward_model),  " variables\n")
+    message("\tAIC Forward: ", count_vars(aic_forward_model),   " variables")
+    message("\tAIC Backward: ", count_vars(aic_backward_model),  " variables\n")
+  }
+
+  if (r2) {
+    message("Adjusted R^2:")
+    message("\tAIC Forward: ", aic_forward_summary$adj.r.squared)
+    message("\tAIC Backward: ", aic_backward_summary$adj.r.squared, "\n")
+  }
+
+  if (plot) {
+    par(mfrow = c(2, 2), oma = c(0, 0, 3, 0))
+    plot(aic_forward_model, sub.caption = "")
+    mtext("AIC Forward Model", outer = TRUE, cex = 1.5, font = 2)
+    plot(aic_backward_model, sub.caption = "")
+    mtext("AIC backward Model", outer = TRUE, cex = 1.5, font = 2)
+    par(mfrow = c(1, 1))
   }
 
 }

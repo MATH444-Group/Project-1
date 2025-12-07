@@ -1,4 +1,4 @@
-runBIC <- function(data, summarize = FALSE, counts = FALSE) {
+runBIC <- function(data, summarize = FALSE, counts = FALSE, r2 = FALSE, plot = TRUE) {
 
   library(MASS)
 
@@ -55,9 +55,12 @@ runBIC <- function(data, summarize = FALSE, counts = FALSE) {
 
 
 
+  bic_forward_summary <- summary(bic_forward_model)
+  bic_backward_summary <- summary(bic_backward_model)
+
   if (summarize) {
-    print(summary(bic_forward_model))
-    print(summary(bic_backward_model))
+    print(bic_forward_summary)
+    print(bic_backward_summary)
   }
 
   count_vars <- function(model) {
@@ -66,8 +69,23 @@ runBIC <- function(data, summarize = FALSE, counts = FALSE) {
 
   if (counts) {
     message("Variable Counts:")
-    message("BIC Forward: ", count_vars(bic_forward_model),   " variables")
-    message("BIC Backward: ", count_vars(bic_backward_model),  " variables\n")
+    message("\tBIC Forward: ", count_vars(bic_forward_model),   " variables")
+    message("\tBIC Backward: ", count_vars(bic_backward_model),  " variables\n")
+  }
+
+  if (r2) {
+    message("Adjusted R^2:")
+    message("\tBIC Forward: ", bic_forward_summary$adj.r.squared)
+    message("\tBIC Backward: ", bic_backward_summary$adj.r.squared, "\n")
+  }
+
+  if (plot) {
+    par(mfrow = c(2, 2), oma = c(0, 0, 3, 0))
+    plot(bic_forward_model, sub.caption = "")
+    mtext("BIC Forward Model", outer = TRUE, cex = 1.5, font = 2)
+    plot(bic_backward_model, sub.caption = "")
+    mtext("BIC backward Model", outer = TRUE, cex = 1.5, font = 2)
+    par(mfrow = c(1, 1))
   }
 
 }

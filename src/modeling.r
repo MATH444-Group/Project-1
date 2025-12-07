@@ -18,9 +18,14 @@ reducedData <- dropHighCollinearPredictors(data = reducedData, responseVariable 
 
 
 
-
+message("************************************* AIC *************************************\n")
 source("aic.r")
-runAIC(data = reducedData, counts = TRUE)
+runAIC(data = reducedData, counts = TRUE, r2 = TRUE, plot = TRUE)
 
+message("************************************* BIC *************************************\n")
 source("bic.r")
-runBIC(data = reducedData, counts = TRUE)
+runBIC(data = reducedData, counts = TRUE, r2 = TRUE)
+
+message("************************************* PCA *************************************\n")
+source("pca.r")
+runPCA(data = reducedData, responseVariable = "SalePrice", counts = TRUE, r2 = TRUE)

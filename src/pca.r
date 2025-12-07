@@ -1,4 +1,4 @@
-runPCA <- function(data, responseVariable, threshold = 0.95, summarize = FALSE, counts = FALSE, r2 = TRUE, plot = TRUE) {
+runPCA <- function(data, responseVariable, lambdas = NULL, threshold = 0.95, summarize = FALSE, counts = FALSE, r2 = FALSE, plot = TRUE) {
   
   # Safety checks
   if (!exists("MODEL_DIR")) {
@@ -37,7 +37,26 @@ runPCA <- function(data, responseVariable, threshold = 0.95, summarize = FALSE, 
 
 
 
-  if (!file.exists(PCA_MODEL_PATH)) {
+
+
+  # --- HELPER: Check if cached model is stale ---
+  shouldReRun <- function(filePath, currentLambdas) {
+    if (!file.exists(filePath)) return(TRUE) # File doesn't exist
+    
+    cachedModel <- readRDS(filePath)
+    
+    # If we didn't save lambdas previously, we must re-run
+    if (is.null(cachedModel$lambdas)) return(TRUE)
+    
+    # Check if lambdas are identical
+    # We use isTRUE(all.equal(...)) to handle floating point comparisons
+    return(!isTRUE(all.equal(cachedModel$lambdas, currentLambdas)))
+  }
+
+  if (shouldReRun(PCA_MODEL_PATH, lambdas)) {
+    
+    message("Running PCA (Lambdas changed or model missing)...")
+    
     # Perform PCA
     pcaResult <- prcomp(numericPredictors, center = TRUE, scale. = TRUE)
     
@@ -71,17 +90,21 @@ runPCA <- function(data, responseVariable, threshold = 0.95, summarize = FALSE, 
     
     # Build a linear regression model using the Principal Components
     pcaModel <- lm(Target ~ ., data = modelData)
+    
+    # Attach lambdas
+    pcaModel$lambdas <- lambdas
 
     saveRDS(pcaModel, PCA_MODEL_PATH)
 
   } else {
+    message("Loading cached PCA model...")
     pcaModel <- readRDS(PCA_MODEL_PATH)
   }
 
 
 
 
-  
+  # Output results
   pcaSummary <- summary(pcaModel)
 
   if (summarize) {

@@ -1,4 +1,4 @@
-runBIC <- function(data, summarize = FALSE, counts = FALSE, r2 = FALSE, plot = TRUE) {
+runBIC <- function(data, lambdas = NULL, summarize = FALSE, counts = FALSE, r2 = FALSE, plot = TRUE) {
 
   library(MASS)
 
@@ -24,8 +24,27 @@ runBIC <- function(data, summarize = FALSE, counts = FALSE, r2 = FALSE, plot = T
 
 
 
+  # --- HELPER: Check if cached model is stale ---
+  shouldReRun <- function(filePath, currentLambdas) {
+    if (!file.exists(filePath)) return(TRUE) # File doesn't exist
+    
+    cachedModel <- readRDS(filePath)
+    
+    # If we didn't save lambdas previously, we must re-run
+    if (is.null(cachedModel$lambdas)) return(TRUE)
+    
+    # Check if lambdas are identical
+    # We use isTRUE(all.equal(...)) to handle floating point comparisons
+    return(!isTRUE(all.equal(cachedModel$lambdas, currentLambdas)))
+  }
+
+  # ---------------------------------------------------------
   # Forward BIC selection
-  if (!file.exists(BIC_FORWARD_MODEL_PATH)) {
+  # ---------------------------------------------------------
+  if (shouldReRun(BIC_FORWARD_MODEL_PATH, lambdas)) {
+
+    message("Running Forward BIC (Lambdas changed or model missing)...")
+
     bic_forward_model <- stepAIC(
       NULL_MODEL,
       scope     = list(lower = NULL_MODEL, upper = fULL_MODEL),
@@ -33,21 +52,34 @@ runBIC <- function(data, summarize = FALSE, counts = FALSE, r2 = FALSE, plot = T
       k         = k_bic,
       trace     = FALSE
     )
+
+    bic_forward_model$lambdas <- lambdas
     saveRDS(bic_forward_model, BIC_FORWARD_MODEL_PATH)
+
   } else {
+    message("Loading cached Forward BIC model...")
     bic_forward_model <- readRDS(BIC_FORWARD_MODEL_PATH)
   }
 
+  # ---------------------------------------------------------
   # Backward BIC selection
-  if (!file.exists(BIC_BACKWARD_MODEL_PATH)) {
+  # ---------------------------------------------------------
+  if (shouldReRun(BIC_BACKWARD_MODEL_PATH, lambdas)) {
+
+    message("Running Backward BIC (Lambdas changed or model missing)...")
+
     bic_backward_model <- stepAIC(
       fULL_MODEL,
       direction = "backward",
       k         = k_bic,
       trace     = FALSE
     )
+
+    bic_backward_model$lambdas <- lambdas
     saveRDS(bic_backward_model, BIC_BACKWARD_MODEL_PATH)
+
   } else {
+    message("Loading cached Backward BIC model...")
     bic_backward_model <- readRDS(BIC_BACKWARD_MODEL_PATH)
   }
 
@@ -55,6 +87,7 @@ runBIC <- function(data, summarize = FALSE, counts = FALSE, r2 = FALSE, plot = T
 
 
 
+  # Output results
   bic_forward_summary <- summary(bic_forward_model)
   bic_backward_summary <- summary(bic_backward_model)
 
@@ -64,7 +97,7 @@ runBIC <- function(data, summarize = FALSE, counts = FALSE, r2 = FALSE, plot = T
   }
 
   count_vars <- function(model) {
-    length(coef(model)) - 1   # subtract intercept
+    length(coef(model)) - 1
   }
 
   if (counts) {
@@ -87,5 +120,4 @@ runBIC <- function(data, summarize = FALSE, counts = FALSE, r2 = FALSE, plot = T
     mtext("BIC backward Model", outer = TRUE, cex = 1.5, font = 2)
     par(mfrow = c(1, 1))
   }
-
 }

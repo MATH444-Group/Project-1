@@ -177,3 +177,78 @@ dropHighCollinearPredictors <- function(data, responseVariable = "Y", threshold 
   }
 
 }
+
+
+
+
+
+dropNonLinearPredictors <- function(data, responseVariable, alpha = 0.05) {
+
+  # Safety checks
+  if (nrow(data) == 0) {
+    message("The data frame is empty.")
+    return(NULL)
+  }
+
+  if (!responseVariable %in% names(data)) {
+    stop("The response variable was not found in the dataframe.")
+  }
+  
+
+
+
+
+  responseData <- data[[responseVariable]]
+  
+  if (!is.numeric(responseData)) {
+    stop("Response variable must be numeric for linear correlation testing.")
+  }
+
+
+  
+  isNumeric <- sapply(data, is.numeric)
+  predictorNames <- names(data)[isNumeric]
+  predictorNames <- predictorNames[predictorNames != responseVariable]
+
+  # Storing the initial predictor count
+  totalNumericPredictors <- length(predictorNames)
+  message(sprintf("Checking %d numeric predictors.", totalNumericPredictors))
+  
+  predictorsToKeep <- c()
+  
+  for (predictor in predictorNames) {
+
+    predictorData <- data[[predictor]]
+    
+    # Perform Pearson correlation test
+    testResult <- tryCatch({
+      cor.test(predictorData, responseData, method = "pearson", use = "complete.obs")
+    }, error = function(e) return(NULL))
+    
+    # If the test succeeded and the p-value implies a significant linear relationship
+    if (!is.null(testResult) && testResult$p.value < alpha) {
+      predictorsToKeep <- c(predictorsToKeep, predictor)
+    }
+
+  }
+
+
+
+  # Output results
+  keptCount <- length(predictorsToKeep)
+  droppedCount <- totalNumericPredictors - keptCount
+
+  message(sprintf("Dropped %d predictors (p >= %s).", droppedCount, alpha))
+  message(sprintf("Kept %d predictors.\n", keptCount))
+  
+
+
+  # Combine response variable with the kept linear predictors
+  finalColumns <- c(responseVariable, predictorsToKeep)
+  
+  nonNumericColumns <- names(data)[!isNumeric]
+  finalColumns <- c(finalColumns, nonNumericColumns)
+  
+  return(data[, finalColumns, drop = FALSE])
+
+}
